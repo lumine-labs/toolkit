@@ -1,1 +1,1 @@
-export { useScheduleLayoutEffect } from "./useScheduleLayoutEffect"
+export { useScheduleLayoutEffect } from "./useScheduleLayoutEffect.js"

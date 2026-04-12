@@ -1,6 +1,6 @@
 import { useState } from "react"
-import { useLazyRef } from "../useLazyRef"
-import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect"
+import { useLazyRef } from "../useLazyRef/index.js"
+import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect/index.js"
 
 type Queue = Map<string | number, () => void>
 

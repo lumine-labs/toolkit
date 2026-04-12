@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react"
-import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect"
+import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect/index.js"
 
 export function useEvent<T extends (...args: any[]) => any>(callback: T) {
     const callbackRef = useRef(callback)
