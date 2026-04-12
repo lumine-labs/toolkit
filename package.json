@@ -1,0 +1,25 @@
+{
+    "name": "@lumelabs/toolkit-workspace",
+    "private": true,
+    "version": "0.0.0",
+    "packageManager": "pnpm@10.0.0",
+    "scripts": {
+        "build": "pnpm -r --if-present build",
+        "typecheck": "pnpm -r --if-present typecheck",
+        "test": "pnpm -r --if-present test",
+        "clean": "pnpm -r --if-present clean",
+        "lint": "pnpm -r --if-present lint",
+        "lint:fix": "pnpm -r --if-present lint:fix",
+        "format": "pnpm -r --if-present format",
+        "format:check": "pnpm -r --if-present format:check"
+    },
+    "devDependencies": {
+        "@lumelabs/eslint-config-react": "^0.1.2",
+        "prettier": "^3.8.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/react": "^16.3.2",
+        "@vitest/coverage-v8": "^4.1.0",
+        "vitest": "^4.1.0",
+        "jsdom": "^29.0.0"
+    }
+}
