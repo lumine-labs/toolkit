@@ -1,4 +1,6 @@
+export { useAsRef } from "./useAsRef/index.js"
 export { useEvent } from "./useEvent/index.js"
+export { makeUseId, useId } from "./useId/index.js"
 export { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect/index.js"
 export { useLazyRef } from "./useLazyRef/index.js"
 export { useScheduleLayoutEffect } from "./useScheduleLayoutEffect/index.js"
