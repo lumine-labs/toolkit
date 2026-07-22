@@ -1,7 +1,13 @@
+import { resolve } from "node:path"
 import { defineConfig } from "vitest/config"
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
+    resolve: {
+        alias: {
+            "@lumelabs/toolkit": resolve(__dirname, "packages/toolkit/src/index.ts"),
+        },
+    },
     test: {
         environment: "jsdom",
         globals: true,

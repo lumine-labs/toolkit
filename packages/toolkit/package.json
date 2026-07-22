@@ -1,0 +1,45 @@
+{
+    "name": "@lumelabs/toolkit",
+    "version": "0.1.0",
+    "sideEffects": false,
+    "description": "Personal TypeScript utility primitives (internal / experimental).",
+    "license": "MIT",
+    "author": "Egor Arkhipov (Lumelabs)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lumine-labs/toolkit.git",
+        "directory": "packages/toolkit"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "utils"
+    ],
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE.md"
+    ],
+    "scripts": {
+        "clean": "rimraf dist",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "build": "pnpm run clean && tsc -p tsconfig.build.json",
+        "prepack": "pnpm run build"
+    },
+    "devDependencies": {
+        "@types/node": "^25.5.0"
+    },
+    "dependencies": {
+        "es-toolkit": "1.49.0"
+    }
+}

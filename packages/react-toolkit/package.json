@@ -1,0 +1,78 @@
+{
+    "name": "@lumelabs/react-toolkit",
+    "version": "0.1.0",
+    "sideEffects": false,
+    "description": "Personal React hooks, utilities & factories (internal / experimental).",
+    "license": "MIT",
+    "author": "Egor Arkhipov (Lumelabs)",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/lumine-labs/toolkit.git",
+        "directory": "packages/react-toolkit"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "keywords": [
+        "react",
+        "hooks"
+    ],
+    "type": "module",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "import": "./dist/index.js",
+            "default": "./dist/index.js"
+        },
+        "./factories": {
+            "types": "./dist/factories/index.d.ts",
+            "import": "./dist/factories/index.js",
+            "default": "./dist/factories/index.js"
+        },
+        "./hooks": {
+            "types": "./dist/hooks/index.d.ts",
+            "import": "./dist/hooks/index.js",
+            "default": "./dist/hooks/index.js"
+        },
+        "./utils": {
+            "types": "./dist/utils/index.d.ts",
+            "import": "./dist/utils/index.js",
+            "default": "./dist/utils/index.js"
+        },
+        "./floating": {
+            "types": "./dist/floating/index.d.ts",
+            "import": "./dist/floating/index.js",
+            "default": "./dist/floating/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "README.md",
+        "LICENSE.md"
+    ],
+    "scripts": {
+        "clean": "rimraf dist",
+        "typecheck": "tsc -p tsconfig.json --noEmit",
+        "build": "pnpm run clean && tsc -p tsconfig.build.json",
+        "prepack": "pnpm run build"
+    },
+    "dependencies": {
+        "@lumelabs/toolkit": "workspace:^",
+        "es-toolkit": "1.49.0"
+    },
+    "peerDependencies": {
+        "@floating-ui/react": ">=0.26.0",
+        "react": "^18.0.0 || ^19.0.0"
+    },
+    "peerDependenciesMeta": {
+        "@floating-ui/react": {
+            "optional": true
+        }
+    },
+    "devDependencies": {
+        "@floating-ui/react": "0.27.19",
+        "@types/node": "^25.5.0",
+        "@types/react": "^19.2.14"
+    }
+}

@@ -1,5 +1,5 @@
 import { render, renderHook } from "@testing-library/react"
-import { makeUseId, useId } from "../packages/react-hooks/src/index.js"
+import { createUseId, useId } from "../packages/react-toolkit/src/index.js"
 
 describe("useId", () => {
     it("returns a stable id across re-renders", () => {
@@ -42,9 +42,9 @@ describe("useId", () => {
     })
 })
 
-describe("makeUseId", () => {
+describe("createUseId", () => {
     it("applies a custom prefix", () => {
-        const useAcmeId = makeUseId("acme")
+        const useAcmeId = createUseId("acme")
         const { result } = renderHook(() => useAcmeId())
         expect(result.current).toMatch(/^acme-/)
     })
