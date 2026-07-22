@@ -1,6 +1,6 @@
 {
     "name": "@lumelabs/react-toolkit",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "sideEffects": false,
     "description": "Personal React hooks, utilities & factories (internal / experimental).",
     "license": "MIT",
@@ -44,7 +44,8 @@
             "types": "./dist/floating/index.d.ts",
             "import": "./dist/floating/index.js",
             "default": "./dist/floating/index.js"
-        }
+        },
+        "./package.json": "./package.json"
     },
     "files": [
         "dist",

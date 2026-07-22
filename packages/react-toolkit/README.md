@@ -20,13 +20,13 @@ npm install @lumelabs/react-toolkit
 
 ## Entry points
 
-| Import | Holds |
-| --- | --- |
-| `@lumelabs/react-toolkit` | everything below re-exported |
-| `@lumelabs/react-toolkit/hooks` | the hooks |
-| `@lumelabs/react-toolkit/utils` | non-hook helpers (`mergeRefs`, `extractProps`, `castNodeToBoolean`, `castDataPropToBoolean`) |
-| `@lumelabs/react-toolkit/factories` | `createSlots`, `createStorageHook`, `createBreakpointHook` |
-| `@lumelabs/react-toolkit/floating` | `useFloatingSizeCapture` (requires the optional `@floating-ui/react` peer) |
+| Import                              | Holds                                                                                        |
+| ----------------------------------- | -------------------------------------------------------------------------------------------- |
+| `@lumelabs/react-toolkit`           | hooks, utils and factories re-exported (floating stays separate)                             |
+| `@lumelabs/react-toolkit/hooks`     | the hooks                                                                                    |
+| `@lumelabs/react-toolkit/utils`     | non-hook helpers (`mergeRefs`, `extractProps`, `castNodeToBoolean`, `castDataPropToBoolean`) |
+| `@lumelabs/react-toolkit/factories` | `createSlots`, `createStorageHook`, `createBreakpointHook`                                   |
+| `@lumelabs/react-toolkit/floating`  | `useFloatingSizeCapture` (requires the optional `@floating-ui/react` peer)                   |
 
 The `floating` entry is isolated on its own subpath so the core import graph never pulls in `@floating-ui`.
 

@@ -23,6 +23,7 @@ Everything is re-exported from the package root. Source is organised by domain u
 - **`async/`** — `LinkedAbortController` (chains an `AbortController` to parent signals).
 - **`dom/`** — `createFileList` (the `DataTransfer` trick for populating a file input), `getTextWidth`, `isIFrame`, `observeResize` + `extractEntrySize` (one shared `ResizeObserver` per box type, refcounted).
 - **`errors/`** — `tc` (error-first `[error, value]` result tuples over `es-toolkit`'s `attempt`, plus `syncSafe`/`asyncSafe` with an `onError` callback), `assertNever`.
+- **`object/`** — `shallowEqual` (one-level equality with an optional per-key comparator).
 - **`pubsub/`** — `EventBus` (typed event map), `createKeyedStore` (refcounted per-key subscription store with an `onActive` resource lifecycle).
 - **`string/`** — `maskString`, `sortStrings`.
 - **`types/`** — `Enum` (const-object enum helper + `Enum<T>` type), `DeepPartial`.

@@ -1,6 +1,6 @@
 {
     "name": "@lumelabs/toolkit",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "sideEffects": false,
     "description": "Personal TypeScript utility primitives (internal / experimental).",
     "license": "MIT",
@@ -23,7 +23,8 @@
             "types": "./dist/index.d.ts",
             "import": "./dist/index.js",
             "default": "./dist/index.js"
-        }
+        },
+        "./package.json": "./package.json"
     },
     "files": [
         "dist",
