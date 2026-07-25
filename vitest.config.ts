@@ -5,7 +5,7 @@ import { defineConfig } from "vitest/config"
 export default defineConfig({
     resolve: {
         alias: {
-            "@lumelabs/toolkit": resolve(__dirname, "packages/toolkit/src/index.ts"),
+            "@luminelabs/toolkit": resolve(__dirname, "packages/toolkit/src/index.ts"),
         },
     },
     test: {

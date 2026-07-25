@@ -1,4 +1,4 @@
-# @lumelabs/react-toolkit
+# @luminelabs/react-toolkit
 
 > ⚠️ **Experimental / Internal Use**
 >
@@ -11,22 +11,22 @@ React-level primitives — hooks, small utilities, and factories. ESM-only. Ship
 ## Install
 
 ```bash
-npm install @lumelabs/react-toolkit
+npm install @luminelabs/react-toolkit
 ```
 
 - **Peer:** `react` `^18 || ^19`.
 - **Optional peer:** `@floating-ui/react` (`>=0.26.0`) — only needed if you import the `./floating` entry.
-- Depends on [`@lumelabs/toolkit`](https://www.npmjs.com/package/@lumelabs/toolkit) and `es-toolkit`.
+- Depends on [`@luminelabs/toolkit`](https://www.npmjs.com/package/@luminelabs/toolkit) and `es-toolkit`.
 
 ## Entry points
 
-| Import                              | Holds                                                                                        |
-| ----------------------------------- | -------------------------------------------------------------------------------------------- |
-| `@lumelabs/react-toolkit`           | hooks, utils and factories re-exported (floating stays separate)                             |
-| `@lumelabs/react-toolkit/hooks`     | the hooks                                                                                    |
-| `@lumelabs/react-toolkit/utils`     | non-hook helpers (`mergeRefs`, `extractProps`, `castNodeToBoolean`, `castDataPropToBoolean`) |
-| `@lumelabs/react-toolkit/factories` | `createSlots`, `createStorageHook`, `createBreakpointHook`                                   |
-| `@lumelabs/react-toolkit/floating`  | `useFloatingSizeCapture` (requires the optional `@floating-ui/react` peer)                   |
+| Import                                | Holds                                                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `@luminelabs/react-toolkit`           | hooks, utils and factories re-exported (floating stays separate)                             |
+| `@luminelabs/react-toolkit/hooks`     | the hooks                                                                                    |
+| `@luminelabs/react-toolkit/utils`     | non-hook helpers (`mergeRefs`, `extractProps`, `castNodeToBoolean`, `castDataPropToBoolean`) |
+| `@luminelabs/react-toolkit/factories` | `createSlots`, `createStorageHook`, `createBreakpointHook`                                   |
+| `@luminelabs/react-toolkit/floating`  | `useFloatingSizeCapture` (requires the optional `@floating-ui/react` peer)                   |
 
 The `floating` entry is isolated on its own subpath so the core import graph never pulls in `@floating-ui`.
 
@@ -35,11 +35,11 @@ The `floating` entry is isolated on its own subpath so the core import graph nev
 State & refs (`useControllableState`, `useLatestRef`, `usePreviousRef`, `useLazyRef`, `useForceRerender`), events (`useEventListener`, `useClickOutside`, `useEvent`), layout & size (`useElementSize`, `useResizeObserver`, `useSizeCapture`, `useIsTruncated`, `useIntersectionObserver`, `useIsomorphicLayoutEffect`, `useScheduleLayoutEffect`), media (`useMediaQuery`), storage (`useLocalStorage`, `useSessionStorage`), debounce (`useDebounceCallback`, `useDebounceValue`), ids (`useId`, `createUseId`), and dev guards (`useControlledSwitchWarning`).
 
 ```ts
-import { useEventListener, useControllableState } from "@lumelabs/react-toolkit"
+import { useEventListener, useControllableState } from "@luminelabs/react-toolkit"
 ```
 
 The set changes often — check the source or your editor's autocomplete for the current list.
 
 ## License
 
-MIT © Lumelabs
+MIT © Lumine Labs

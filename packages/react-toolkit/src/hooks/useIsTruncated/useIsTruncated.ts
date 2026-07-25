@@ -1,4 +1,4 @@
-import { observeResize } from "@lumelabs/toolkit"
+import { observeResize } from "@luminelabs/toolkit"
 import { useCallback, useRef, useState } from "react"
 
 // Reports whether an element's text is vertically truncated (scrollHeight

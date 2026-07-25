@@ -50,7 +50,7 @@ importers:
 
   packages/react-toolkit:
     dependencies:
-      '@lumelabs/toolkit':
+      '@luminelabs/toolkit':
         specifier: workspace:^
         version: link:../toolkit
       es-toolkit:

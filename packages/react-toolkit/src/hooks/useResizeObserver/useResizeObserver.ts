@@ -1,4 +1,4 @@
-import { observeResize } from "@lumelabs/toolkit"
+import { observeResize } from "@luminelabs/toolkit"
 import { useEffect, type RefObject } from "react"
 import { useEvent } from "../useEvent/index.js"
 

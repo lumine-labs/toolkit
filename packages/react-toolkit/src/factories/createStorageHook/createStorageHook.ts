@@ -1,4 +1,4 @@
-import { createKeyedStore, tc } from "@lumelabs/toolkit"
+import { createKeyedStore, tc } from "@luminelabs/toolkit"
 import { useCallback, useMemo, useSyncExternalStore } from "react"
 import { useLatestRef } from "../../hooks/useLatestRef/index.js"
 

@@ -1,10 +1,10 @@
 {
-    "name": "@lumelabs/react-toolkit",
+    "name": "@luminelabs/react-toolkit",
     "version": "0.1.1",
     "sideEffects": false,
     "description": "Personal React hooks, utilities & factories (internal / experimental).",
     "license": "MIT",
-    "author": "Egor Arkhipov (Lumelabs)",
+    "author": "Egor Arkhipov (Lumine Labs)",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/lumine-labs/toolkit.git",
@@ -59,7 +59,7 @@
         "prepack": "pnpm run build"
     },
     "dependencies": {
-        "@lumelabs/toolkit": "workspace:^",
+        "@luminelabs/toolkit": "workspace:^",
         "es-toolkit": "1.49.0"
     },
     "peerDependencies": {

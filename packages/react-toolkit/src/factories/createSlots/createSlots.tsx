@@ -1,4 +1,4 @@
-import { createKeyedStore, type KeyedStore } from "@lumelabs/toolkit"
+import { createKeyedStore, type KeyedStore } from "@luminelabs/toolkit"
 import { createContext, useCallback, useContext, useMemo, useState, useSyncExternalStore, type ReactNode } from "react"
 import { useIsomorphicLayoutEffect } from "../../hooks/useIsomorphicLayoutEffect/index.js"
 

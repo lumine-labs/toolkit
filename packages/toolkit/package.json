@@ -1,10 +1,10 @@
 {
-    "name": "@lumelabs/toolkit",
+    "name": "@luminelabs/toolkit",
     "version": "0.1.1",
     "sideEffects": false,
     "description": "Personal TypeScript utility primitives (internal / experimental).",
     "license": "MIT",
-    "author": "Egor Arkhipov (Lumelabs)",
+    "author": "Egor Arkhipov (Lumine Labs)",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/lumine-labs/toolkit.git",

@@ -1,4 +1,4 @@
-import { createKeyedStore } from "@lumelabs/toolkit"
+import { createKeyedStore } from "@luminelabs/toolkit"
 import { useCallback, useSyncExternalStore } from "react"
 
 type UseMediaQueryOptions = {

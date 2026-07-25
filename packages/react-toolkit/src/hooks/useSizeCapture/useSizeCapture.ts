@@ -1,4 +1,4 @@
-import { extractEntrySize, observeResize } from "@lumelabs/toolkit"
+import { extractEntrySize, observeResize } from "@luminelabs/toolkit"
 import { useCallback, useRef } from "react"
 import { useLatestRef } from "../useLatestRef/index.js"
 

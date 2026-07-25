@@ -1,4 +1,4 @@
-# @lumelabs/toolkit
+# @luminelabs/toolkit
 
 > ⚠️ **Experimental / Internal Use**
 >
@@ -11,7 +11,7 @@ Small, framework-free TypeScript primitives. ESM-only. Ships types.
 ## Install
 
 ```bash
-npm install @lumelabs/toolkit
+npm install @luminelabs/toolkit
 ```
 
 Peer-free; pulls in [`es-toolkit`](https://github.com/toss/es-toolkit) as its only runtime dependency (tree-shakeable).
@@ -29,11 +29,11 @@ Everything is re-exported from the package root. Source is organised by domain u
 - **`types/`** — `Enum` (const-object enum helper + `Enum<T>` type), `DeepPartial`.
 
 ```ts
-import { EventBus, tc, Enum } from "@lumelabs/toolkit"
+import { EventBus, tc, Enum } from "@luminelabs/toolkit"
 ```
 
 For anything not covered here, reach for `es-toolkit` directly — this package deliberately doesn't re-wrap what it already does well.
 
 ## License
 
-MIT © Lumelabs
+MIT © Lumine Labs
