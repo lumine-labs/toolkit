@@ -33,6 +33,22 @@ const trigger = (element: Element, width: number, height: number) => {
     )
 }
 
+const readVariables = (target: HTMLElement, prefix = "addon") => [
+    target.style.getPropertyValue(`--${prefix}-width`),
+    target.style.getPropertyValue(`--${prefix}-height`),
+]
+
+type CaptureProps = {
+    source: Element | null
+    target: HTMLElement | null
+    prefix?: string
+}
+
+const renderCapture = (initialProps: CaptureProps) =>
+    renderHook(({ source, target, prefix = "addon" }: CaptureProps) => useSizeCapture({ source, target, prefix }), {
+        initialProps,
+    })
+
 beforeEach(() => {
     unobserveCalls = []
     vi.stubGlobal("ResizeObserver", MockResizeObserver)
@@ -47,43 +63,104 @@ describe("useSizeCapture", () => {
         const source = document.createElement("div")
         const target = document.createElement("div")
 
-        const { result } = renderHook(() => useSizeCapture("addon"))
-        result.current.setTarget(target)
-        result.current.setSource(source)
+        renderCapture({ source, target })
 
         trigger(source, 120, 40)
-        expect(target.style.getPropertyValue("--addon-width")).toBe("120px")
-        expect(target.style.getPropertyValue("--addon-height")).toBe("40px")
+        expect(readVariables(target)).toEqual(["120px", "40px"])
     })
 
-    it("applies the known size immediately when the target element attaches later", () => {
+    it("applies the known size when the target arrives after the source", () => {
         const source = document.createElement("div")
         const target = document.createElement("div")
 
-        const { result } = renderHook(() => useSizeCapture("addon"))
-        result.current.setSource(source)
+        const { rerender } = renderCapture({ source, target: null })
         trigger(source, 80, 24)
 
-        result.current.setTarget(target)
-        expect(target.style.getPropertyValue("--addon-width")).toBe("80px")
-        expect(target.style.getPropertyValue("--addon-height")).toBe("24px")
+        rerender({ source, target })
+        expect(readVariables(target)).toEqual(["80px", "24px"])
     })
 
-    it("stops updating after the source detaches", () => {
+    it("applies the first measurement when the source arrives after the target", () => {
         const source = document.createElement("div")
         const target = document.createElement("div")
 
-        const { result } = renderHook(() => useSizeCapture("addon"))
-        result.current.setTarget(target)
-        result.current.setSource(source)
+        const { rerender } = renderCapture({ source: null, target })
+        expect(readVariables(target)).toEqual(["", ""])
+
+        rerender({ source, target })
+        trigger(source, 64, 16)
+        expect(readVariables(target)).toEqual(["64px", "16px"])
+    })
+
+    it("moves the subscription when the source is replaced", () => {
+        const first = document.createElement("div")
+        const second = document.createElement("div")
+        const target = document.createElement("div")
+
+        const { rerender } = renderCapture({ source: first, target })
+        trigger(first, 120, 40)
+
+        rerender({ source: second, target })
+        expect(unobserveCalls).toEqual([first])
+
+        trigger(first, 999, 999)
+        expect(readVariables(target)).toEqual(["120px", "40px"])
+
+        trigger(second, 200, 60)
+        expect(readVariables(target)).toEqual(["200px", "60px"])
+    })
+
+    it("re-applies the last size onto a replaced target", () => {
+        const source = document.createElement("div")
+        const first = document.createElement("div")
+        const second = document.createElement("div")
+
+        const { rerender } = renderCapture({ source, target: first })
         trigger(source, 120, 40)
 
-        result.current.setSource(null)
+        rerender({ source, target: second })
+        expect(readVariables(second)).toEqual(["120px", "40px"])
+
+        trigger(source, 130, 50)
+        expect(readVariables(second)).toEqual(["130px", "50px"])
+    })
+
+    it("re-applies the last size under a new prefix", () => {
+        const source = document.createElement("div")
+        const target = document.createElement("div")
+
+        const { rerender } = renderCapture({ source, target })
+        trigger(source, 120, 40)
+
+        rerender({ source, target, prefix: "trigger" })
+        expect(readVariables(target, "trigger")).toEqual(["120px", "40px"])
+
+        trigger(source, 130, 50)
+        expect(readVariables(target, "trigger")).toEqual(["130px", "50px"])
+    })
+
+    it("stops updating after the source goes null", () => {
+        const source = document.createElement("div")
+        const target = document.createElement("div")
+
+        const { rerender } = renderCapture({ source, target })
+        trigger(source, 120, 40)
+
+        rerender({ source: null, target })
         expect(unobserveCalls).toEqual([source])
 
         trigger(source, 999, 999)
-        expect(target.style.getPropertyValue("--addon-width")).toBe("120px")
-        expect(target.style.getPropertyValue("--addon-height")).toBe("40px")
+        expect(readVariables(target)).toEqual(["120px", "40px"])
+    })
+
+    it("unsubscribes from the source on unmount", () => {
+        const source = document.createElement("div")
+        const target = document.createElement("div")
+
+        const { unmount } = renderCapture({ source, target })
+        unmount()
+
+        expect(unobserveCalls).toEqual([source])
     })
 
     it("never re-renders on size updates", () => {
@@ -91,18 +168,17 @@ describe("useSizeCapture", () => {
         const target = document.createElement("div")
 
         let renders = 0
-        const { result } = renderHook(() => {
+        renderHook(() => {
             renders += 1
-            return useSizeCapture("addon")
+            return useSizeCapture({ source, target, prefix: "addon" })
         })
-        result.current.setTarget(target)
-        result.current.setSource(source)
 
+        const rendersAfterAttach = renders
         trigger(source, 120, 40)
         trigger(source, 130, 50)
         trigger(source, 140, 60)
 
-        expect(renders).toBe(1)
-        expect(target.style.getPropertyValue("--addon-width")).toBe("140px")
+        expect(renders).toBe(rendersAfterAttach)
+        expect(readVariables(target)).toEqual(["140px", "60px"])
     })
 })

@@ -8,9 +8,7 @@ type UseControllableStateOptions<T> = {
     onChange?: (value: T) => void
 }
 
-// Controlled when `value` is provided, uncontrolled (internal state seeded by
-// `defaultValue`) otherwise; `onChange` fires in both modes. Note: a function
-// updater resolves against the value of the render that triggered it.
+// Controlled when `value` is provided, uncontrolled (internal state seeded by `defaultValue`) otherwise.
 export const useControllableState = <T>({ value, defaultValue, onChange }: UseControllableStateOptions<T>) => {
     useControlledSwitchWarning(value)
 

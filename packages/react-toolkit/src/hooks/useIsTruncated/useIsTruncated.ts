@@ -1,27 +1,24 @@
-import { observeResize } from "@luminelabs/toolkit"
-import { useCallback, useRef, useState } from "react"
+import { useState } from "react"
+import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect/index.js"
+import { useResizeObserver } from "../useResizeObserver/index.js"
 
-// Reports whether an element's text is vertically truncated (scrollHeight
-// exceeds clientHeight). Measures on mount and re-measures via the shared
-// ResizeObserver whenever the element's size changes. Content changes that
-// don't affect the element's size do not retrigger measurement.
-export const useIsTruncated = <T extends HTMLElement>() => {
+// Reports whether the element's text is vertically truncated (scrollHeight exceeds clientHeight).
+export const useIsTruncated = <T extends HTMLElement>(element: T | null): boolean => {
     const [isTruncated, setIsTruncated] = useState(false)
-    const unobserveRef = useRef<(() => void) | null>(null)
 
-    const ref = useCallback((element: T | null) => {
-        unobserveRef.current?.()
-        unobserveRef.current = null
+    useIsomorphicLayoutEffect(() => {
+        if (!element) return
+        setIsTruncated(isVerticallyTruncated(element))
+    }, [element])
 
-        if (!element) {
-            return
-        }
+    useResizeObserver(element, (entry) => setIsTruncated(isVerticallyTruncated(entry.target)))
 
-        const measure = () => setIsTruncated(element.scrollHeight > element.clientHeight)
-        measure()
+    return isTruncated
+}
 
-        unobserveRef.current = observeResize(element, measure)
-    }, [])
+// Helpers
+// ========================================
 
-    return { ref, isTruncated }
+function isVerticallyTruncated(element: Element): boolean {
+    return element.scrollHeight > element.clientHeight
 }

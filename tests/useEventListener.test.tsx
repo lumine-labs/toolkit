@@ -19,12 +19,53 @@ describe("useEventListener", () => {
         expect(listener).not.toHaveBeenCalled()
     })
 
-    it("attaches to the element behind a ref target", () => {
+    it("attaches to an element target", () => {
         const element = document.createElement("button")
         document.body.appendChild(element)
         const listener = vi.fn()
-        renderHook(() => useEventListener("click", listener, { target: { current: element } }))
+        renderHook(() => useEventListener("click", listener, { target: element }))
 
+        fireEvent.click(element)
+        expect(listener).toHaveBeenCalledTimes(1)
+
+        element.remove()
+    })
+
+    it("moves the subscription when the target element is replaced", () => {
+        const first = document.createElement("button")
+        const second = document.createElement("button")
+        document.body.append(first, second)
+        const listener = vi.fn()
+        const { rerender } = renderHook(
+            ({ target }: { target: HTMLElement | null }) => useEventListener("click", listener, { target }),
+            { initialProps: { target: first as HTMLElement | null } }
+        )
+
+        rerender({ target: second })
+
+        fireEvent.click(first)
+        expect(listener).not.toHaveBeenCalled()
+
+        fireEvent.click(second)
+        expect(listener).toHaveBeenCalledTimes(1)
+
+        first.remove()
+        second.remove()
+    })
+
+    it("attaches to a target that arrives after mount", () => {
+        const element = document.createElement("button")
+        document.body.appendChild(element)
+        const listener = vi.fn()
+        const { rerender } = renderHook(
+            ({ target }: { target: HTMLElement | null }) => useEventListener("click", listener, { target }),
+            { initialProps: { target: null as HTMLElement | null } }
+        )
+
+        fireEvent.click(element)
+        expect(listener).not.toHaveBeenCalled()
+
+        rerender({ target: element })
         fireEvent.click(element)
         expect(listener).toHaveBeenCalledTimes(1)
 
@@ -96,7 +137,7 @@ describe("useEventListener", () => {
     it("passes capture through to addEventListener", () => {
         const element = document.createElement("button")
         const spy = vi.spyOn(element, "addEventListener")
-        renderHook(() => useEventListener("click", () => {}, { target: { current: element }, capture: true }))
+        renderHook(() => useEventListener("click", () => {}, { target: element, capture: true }))
 
         expect(spy).toHaveBeenCalledTimes(1)
         expect(spy.mock.calls[0][2]).toMatchObject({ capture: true })

@@ -2,8 +2,7 @@ import { useEffect, useRef } from "react"
 
 // Mirrors React's controlled/uncontrolled input warning for custom components:
 // a value that switches between undefined and defined across renders means the
-// component is flipping between uncontrolled and controlled mode. Warns (like
-// React does) rather than throwing, and at most once per component instance.
+// component is flipping between uncontrolled and controlled mode.
 export const useControlledSwitchWarning = (value: unknown) => {
     const previousValue = useRef(value)
     const didWarn = useRef(false)

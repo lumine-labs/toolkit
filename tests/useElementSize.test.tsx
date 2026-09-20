@@ -1,4 +1,5 @@
 import { act, render } from "@testing-library/react"
+import { useState } from "react"
 import { useElementSize } from "../packages/react-toolkit/src/index.js"
 
 let unobserveCalls: Element[] = []
@@ -41,11 +42,25 @@ const trigger = (element: Element, box: string, entry: Partial<ResizeObserverEnt
 const boxSize = (inlineSize: number, blockSize: number) =>
     [{ inlineSize, blockSize }] as unknown as readonly ResizeObserverSize[]
 
+type ProbeProps = {
+    box?: ResizeObserverBoxOptions
+    attached?: boolean
+    variant?: string
+}
+
+// The reported size is rendered outside the observed element so it stays
+// readable while the element itself is detached.
 let renders = 0
-const Probe = ({ box }: { box?: ResizeObserverBoxOptions }) => {
+const Probe = ({ box, attached = true, variant = "first" }: ProbeProps) => {
     renders += 1
-    const { ref, width, height } = useElementSize<HTMLDivElement>(box ? { box } : undefined)
-    return <div ref={ref} data-testid="el" data-size={`${width}x${height}`} />
+    const [element, setElement] = useState<HTMLDivElement | null>(null)
+    const size = useElementSize(element, box ? { box } : undefined)
+    return (
+        <>
+            <span data-testid="size">{size ? `${size.width}x${size.height}` : "none"}</span>
+            {attached ? <div key={variant} ref={setElement} data-testid="el" /> : null}
+        </>
+    )
 }
 
 beforeEach(() => {
@@ -59,33 +74,37 @@ afterEach(() => {
 })
 
 describe("useElementSize", () => {
-    it("starts at zero width and height", () => {
+    it("is undefined before the element has been measured", () => {
         const { getByTestId } = render(<Probe />)
-        expect(getByTestId("el").dataset.size).toBe("0x0")
+        expect(getByTestId("size").textContent).toBe("none")
     })
 
     it("updates from contentBoxSize when the observed element resizes", () => {
         const { getByTestId } = render(<Probe />)
-        const element = getByTestId("el")
 
-        trigger(element, "content-box", { contentBoxSize: boxSize(120, 40) })
-        expect(element.dataset.size).toBe("120x40")
+        trigger(getByTestId("el"), "content-box", { contentBoxSize: boxSize(120, 40) })
+        expect(getByTestId("size").textContent).toBe("120x40")
     })
 
     it("reads borderBoxSize when the border box is requested", () => {
         const { getByTestId } = render(<Probe box="border-box" />)
-        const element = getByTestId("el")
 
-        trigger(element, "border-box", { borderBoxSize: boxSize(144, 56) })
-        expect(element.dataset.size).toBe("144x56")
+        trigger(getByTestId("el"), "border-box", { borderBoxSize: boxSize(144, 56) })
+        expect(getByTestId("size").textContent).toBe("144x56")
     })
 
     it("falls back to contentRect when the box-size arrays are missing", () => {
         const { getByTestId } = render(<Probe />)
-        const element = getByTestId("el")
 
-        trigger(element, "content-box", { contentRect: { width: 90, height: 30 } as DOMRectReadOnly })
-        expect(element.dataset.size).toBe("90x30")
+        trigger(getByTestId("el"), "content-box", { contentRect: { width: 90, height: 30 } as DOMRectReadOnly })
+        expect(getByTestId("size").textContent).toBe("90x30")
+    })
+
+    it("commits a first measurement of zero by zero", () => {
+        const { getByTestId } = render(<Probe />)
+
+        trigger(getByTestId("el"), "content-box", { contentBoxSize: boxSize(0, 0) })
+        expect(getByTestId("size").textContent).toBe("0x0")
     })
 
     it("keeps the same state for an identical size report", () => {
@@ -96,10 +115,48 @@ describe("useElementSize", () => {
         const rendersAfterChange = renders
 
         trigger(element, "content-box", { contentBoxSize: boxSize(120, 40) })
-        expect(element.dataset.size).toBe("120x40")
+        expect(getByTestId("size").textContent).toBe("120x40")
         // React may render once to evaluate the updater, but the bailout must
         // prevent any further render cascade.
         expect(renders).toBeLessThanOrEqual(rendersAfterChange + 1)
+    })
+
+    it("observes an element that mounts after the hook", () => {
+        const { getByTestId, queryByTestId, rerender } = render(<Probe attached={false} />)
+        expect(queryByTestId("el")).toBeNull()
+
+        rerender(<Probe attached />)
+
+        trigger(getByTestId("el"), "content-box", { contentBoxSize: boxSize(120, 40) })
+        expect(getByTestId("size").textContent).toBe("120x40")
+    })
+
+    it("moves the subscription when the observed element is replaced", () => {
+        const { getByTestId, rerender } = render(<Probe />)
+        const first = getByTestId("el")
+        trigger(first, "content-box", { contentBoxSize: boxSize(120, 40) })
+
+        rerender(<Probe variant="second" />)
+        const second = getByTestId("el")
+        expect(second).not.toBe(first)
+        expect(unobserveCalls).toEqual([first])
+
+        trigger(first, "content-box", { contentBoxSize: boxSize(999, 999) })
+        expect(getByTestId("size").textContent).toBe("120x40")
+
+        trigger(second, "content-box", { contentBoxSize: boxSize(80, 24) })
+        expect(getByTestId("size").textContent).toBe("80x24")
+    })
+
+    it("goes back to undefined when the element detaches", () => {
+        const { getByTestId, rerender } = render(<Probe />)
+        const element = getByTestId("el")
+        trigger(element, "content-box", { contentBoxSize: boxSize(120, 40) })
+        expect(getByTestId("size").textContent).toBe("120x40")
+
+        rerender(<Probe attached={false} />)
+        expect(getByTestId("size").textContent).toBe("none")
+        expect(unobserveCalls).toEqual([element])
     })
 
     it("unsubscribes when the element detaches", () => {

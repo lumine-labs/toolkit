@@ -1,4 +1,5 @@
 import { act, render } from "@testing-library/react"
+import { useState } from "react"
 import { useIsTruncated } from "../packages/react-toolkit/src/index.js"
 
 // The shared registry behind useIsTruncated caches one observer per box type
@@ -44,9 +45,16 @@ afterEach(() => {
     delete (HTMLElement.prototype as unknown as Record<string, unknown>)["clientHeight"]
 })
 
-const Probe = () => {
-    const { ref, isTruncated } = useIsTruncated<HTMLDivElement>()
-    return <div ref={ref} data-testid="el" data-truncated={String(isTruncated)} />
+type ProbeProps = {
+    attached?: boolean
+    variant?: string
+}
+
+const Probe = ({ attached = true, variant = "first" }: ProbeProps) => {
+    const [element, setElement] = useState<HTMLDivElement | null>(null)
+    const isTruncated = useIsTruncated(element)
+    if (!attached) return null
+    return <div key={variant} ref={setElement} data-testid="el" data-truncated={String(isTruncated)} />
 }
 
 describe("useIsTruncated", () => {
@@ -67,6 +75,16 @@ describe("useIsTruncated", () => {
         expect(getByTestId("el").dataset.truncated).toBe("false")
     })
 
+    it("reports the measurement without waiting for an observer delivery", () => {
+        scrollHeight = 100
+        clientHeight = 50
+        const { getByTestId } = render(<Probe />)
+
+        // the mock observer never delivers on its own, so a truncated reading
+        // here can only come from the synchronous measure on attach
+        expect(getByTestId("el").dataset.truncated).toBe("true")
+    })
+
     it("re-measures when the observer fires after a size change", () => {
         scrollHeight = 50
         clientHeight = 50
@@ -76,6 +94,56 @@ describe("useIsTruncated", () => {
         scrollHeight = 100
         trigger(getByTestId("el"))
         expect(getByTestId("el").dataset.truncated).toBe("true")
+    })
+
+    it("measures an element that arrives after mount", () => {
+        scrollHeight = 100
+        clientHeight = 50
+        const { getByTestId, queryByTestId, rerender } = render(<Probe attached={false} />)
+        expect(queryByTestId("el")).toBeNull()
+        expect(observeCalls).toEqual([])
+
+        rerender(<Probe attached />)
+        const element = getByTestId("el")
+
+        expect(element.dataset.truncated).toBe("true")
+        expect(observeCalls).toEqual([[element, { box: "content-box" }]])
+    })
+
+    it("measures the replacement element when the observed one is swapped", () => {
+        scrollHeight = 50
+        clientHeight = 50
+        const { getByTestId, rerender } = render(<Probe />)
+        const first = getByTestId("el")
+        expect(first.dataset.truncated).toBe("false")
+
+        scrollHeight = 100
+        rerender(<Probe variant="second" />)
+        const second = getByTestId("el")
+        expect(second).not.toBe(first)
+        expect(second.dataset.truncated).toBe("true")
+        expect(unobserveCalls).toEqual([first])
+        expect(observeCalls).toEqual([
+            [first, { box: "content-box" }],
+            [second, { box: "content-box" }],
+        ])
+
+        scrollHeight = 50
+        trigger(first)
+        expect(second.dataset.truncated).toBe("true")
+    })
+
+    it("stops observing when the element goes away", () => {
+        scrollHeight = 100
+        clientHeight = 50
+        const { getByTestId, rerender } = render(<Probe />)
+        const element = getByTestId("el")
+
+        rerender(<Probe attached={false} />)
+        expect(unobserveCalls).toEqual([element])
+
+        scrollHeight = 50
+        expect(() => trigger(element)).not.toThrow()
     })
 
     it("stops observing on unmount", () => {

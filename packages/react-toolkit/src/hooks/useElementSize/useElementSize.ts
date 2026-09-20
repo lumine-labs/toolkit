@@ -1,6 +1,7 @@
-import { extractEntrySize, observeResize } from "@luminelabs/toolkit"
-import { useCallback, useRef, useState } from "react"
-import { useLatestRef } from "../useLatestRef/index.js"
+import { extractEntrySize } from "@luminelabs/toolkit"
+import { useState } from "react"
+import { useIsomorphicLayoutEffect } from "../useIsomorphicLayoutEffect/index.js"
+import { useResizeObserver } from "../useResizeObserver/index.js"
 
 type ElementSize = {
     width: number
@@ -11,33 +12,31 @@ type UseElementSizeOptions = {
     box?: ResizeObserverBoxOptions
 }
 
-// Tracks an element's size (of the given box, default content box) via the
-// shared ResizeObserver. Width and height stay 0 until the callback ref
-// attaches; `box` is applied at attach time.
-export const useElementSize = <T extends Element>({ box = "content-box" }: UseElementSizeOptions = {}) => {
-    const [size, setSize] = useState<ElementSize>({ width: 0, height: 0 })
-    const unobserveRef = useRef<(() => void) | null>(null)
-    const boxRef = useLatestRef(box)
+// Tracks the element's size (of the given box, default content box) via the
+// shared ResizeObserver. Undefined until the element has been measured, and
+// undefined again once it detaches.
+export const useElementSize = <T extends Element>(
+    element: T | null,
+    { box = "content-box" }: UseElementSizeOptions = {}
+): ElementSize | undefined => {
+    const [size, setSize] = useState<ElementSize | undefined>(undefined)
 
-    const ref = useCallback(
-        (element: T | null) => {
-            unobserveRef.current?.()
-            unobserveRef.current = null
-
-            if (!element) return
-
-            const attachedBox = boxRef.current
-            const onResize = (entry: ResizeObserverEntry) => {
-                const next = extractEntrySize(entry, attachedBox)
-                setSize((current) => {
-                    if (current.width === next.width && current.height === next.height) return current
-                    return next
-                })
-            }
-            unobserveRef.current = observeResize(element, onResize, attachedBox)
+    useResizeObserver(
+        element,
+        (entry) => {
+            const next = extractEntrySize(entry, box)
+            setSize((current) => {
+                if (current && current.width === next.width && current.height === next.height) return current
+                return next
+            })
         },
-        [boxRef]
+        { box }
     )
 
-    return { ref, width: size.width, height: size.height }
+    useIsomorphicLayoutEffect(() => {
+        if (element) return
+        setSize(undefined)
+    }, [element])
+
+    return size
 }
