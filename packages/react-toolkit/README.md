@@ -32,7 +32,7 @@ The `floating` entry is isolated on its own subpath so the core import graph nev
 
 ## Hooks (overview)
 
-State & refs (`useControllableState`, `useLatestRef`, `usePreviousRef`, `useLazyRef`, `useForceRerender`), events (`useEventListener`, `useClickOutside`, `useEvent`), layout & size (`useElementSize`, `useResizeObserver`, `useSizeCapture`, `useIsTruncated`, `useIntersectionObserver`, `useIsomorphicLayoutEffect`, `useScheduleLayoutEffect`), media (`useMediaQuery`), storage (`useLocalStorage`, `useSessionStorage`), debounce (`useDebounceCallback`, `useDebounceValue`), ids (`useId`, `createUseId`), and dev guards (`useControlledSwitchWarning`).
+State & refs (`useControllableState`, `useLatestRef`, `useLazyRef`, `useForceRerender`), events (`useEventListener`, `useClickOutside`, `useEvent`), layout & size (`useElementSize`, `useResizeObserver`, `useSizeCapture`, `useIsTruncated`, `useIntersectionObserver`, `useIsomorphicLayoutEffect`, `useScheduleLayoutEffect`), media (`useMediaQuery`), storage (`useLocalStorage`, `useSessionStorage`), debounce (`useDebounceCallback`, `useDebounceValue`), ids (`useId`, `createUseId`), and dev guards (`useControlledSwitchWarning`).
 
 ```ts
 import { useEventListener, useControllableState } from "@luminelabs/react-toolkit"
